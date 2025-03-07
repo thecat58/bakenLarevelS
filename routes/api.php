@@ -19,9 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/cart', [CarroComprasController::class, 'index']);
-Route::post('/cart', [CarroComprasController::class, 'store']);
-
+Route::resource('cart', CarroComprasController::class);
 Route::delete('cart/{$id}', [CarroComprasController::class ,'destroy']);
 
 
