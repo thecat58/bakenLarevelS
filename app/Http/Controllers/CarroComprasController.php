@@ -12,9 +12,32 @@ class CarroComprasController extends Controller
      */
     public function index()
     {
+        // Cargar todos los productos en memoria
+        $path = resource_path('json/json.json');
+        $jsonContent = file_get_contents($path);
+        $productos = json_decode($jsonContent, true);
+    
+        // Obtener todos los carros de compras
         $compras = CarroCompras::all();
+    
+        // Para cada carro de compras, obtener el producto asociado
+        $comprasConProductos = $compras->map(function ($compra) use ($productos) {
+            // Buscar el producto correspondiente
+            $producto = collect($productos)->firstWhere('id', $compra->producto_id);
+    
+            // Construir la estructura deseada
+            return [
+                'id' => $compra->id,
+                'producto_id' => $compra->producto_id,
+              
+                    'name' => $producto['name'],
+                    'price' => $producto['price']
+                
+            ];
+        });
+    
         return response()->json([
-            'Comparas' => $compras
+            'compras' => $comprasConProductos
         ]);
     }
 
